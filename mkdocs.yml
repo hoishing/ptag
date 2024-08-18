@@ -1,4 +1,4 @@
-site_name: ptag
+site_name: pTag
 
 repo_url: https://github.com/hoishing/ptag
 extra_css:
@@ -9,13 +9,13 @@ theme:
         text: Varela Round
     name: "material"
     icon:
-        repo: fontawesome/brands/github
+        logo: fontawesome/solid/code
     favicon: favicon.png
-    logo: https://api.iconify.design/heroicons-solid/template.svg?color=white
     palette:
         # Palette toggle for dark mode
         - media: "(prefers-color-scheme: dark)"
-          primary: deep purple
+          # primary: deep purple
+          primary: black
           scheme: slate
           toggle:
               icon: material/toggle-switch-off-outline
@@ -23,7 +23,7 @@ theme:
 
         # Palette toggle for light mode
         - media: "(prefers-color-scheme: light)"
-          primary: deep purple
+          primary: white
           scheme: default
           toggle:
               icon: material/toggle-switch
