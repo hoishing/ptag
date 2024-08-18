@@ -1,0 +1,34 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "ptag"
+version = "0.1.0"
+description = "pythonic way to create HTML/XML/SVG"
+authors = ["Kelvin Ng <hoishing@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://hoishing.github.io/ptag"
+repository = "https://github.com/hoishing/ptag"
+documentation = "https://hoishing.github.io/ptag"
+keywords = ["template", "html"]
+classifiers = [
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+  "Intended Audience :: Developers",
+  "Development Status :: 4 - Beta",
+]
+packages = [{ include = "ptag", from = "." }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+pytest = "^8.3.2"
+toml = "^0.10.2"
+mkdocstrings = { extras = ["python"], version = "^0.25.2" }
+mkdocs-material = "^9.5.31"
