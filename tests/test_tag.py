@@ -86,6 +86,11 @@ def test_boolean_attribute():
     assert str(input) == '<input checked type="checkbox" />'
 
 
+def test_none_kwarg():
+    t = Tag("div", None, id=3, class_=None, selected="")
+    assert str(t) == '<div id="3" selected="" />'
+
+
 def test_pretty():
     with Tag("html") as html:
         div = Tag("div", "hello")

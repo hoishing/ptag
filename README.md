@@ -77,7 +77,7 @@ with ul(id="navigation") as nav:
         li(a(item.caption, href=item.href))
 ```
 
-It provides full intellisense, type checking, and all language supports from the text editor. A much better DX.
+It provides full intellisense, type checking, extensive language supports from text editors... etc. a much better DX.
 
 ## Need Help?
 

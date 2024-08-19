@@ -28,6 +28,10 @@ class Tag:
         >>> Tag('a', 'foo', 'm-2', 'rounded', 'text-teal-400', href='bar')
         <a m-2 rounded text-teal-400 href="bar">foo</a>
 
+        - none attribute will be omitted
+        >>> Tag('a', 'foo', href=None, target='_blank')
+        <a target="_blank">foo</a>
+
         - nested Tag
         >>> Tag("div", Tag("i", "x"))
         <div><i>x</i></div>
@@ -99,7 +103,7 @@ class Tag:
         """string representation of the Tag"""
 
         # handle python naming restriction
-        correct_keys = [
+        amended_keys = [
             (
                 key.removesuffix("_")
                 if key in ("class_", "for_")
@@ -108,9 +112,9 @@ class Tag:
             for key in self.kwargs.keys()
         ]
 
-        kwargs_tuple = zip(correct_keys, self.kwargs.values())
+        kwargs_tuple = zip(amended_keys, self.kwargs.values())
 
-        kwargs = [f'{key}="{val}"' for key, val in kwargs_tuple]
+        kwargs = [f'{key}="{val}"' for key, val in kwargs_tuple if val is not None]
         attr = [self.tag_name] + list(self.args) + kwargs
         attr_str = " ".join(attr)
 
