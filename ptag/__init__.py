@@ -1,4 +1,4 @@
-"""pTag - a minimalist python html/svg template lib"""
+"""ptag - pythonic way to create HTML/XML/SVG tags"""
 
 from .elements import *
 

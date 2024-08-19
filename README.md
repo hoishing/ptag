@@ -1,8 +1,8 @@
-# pTag
+# ptag
 
 [![ci-badge]][ci-url] [![pypi-badge]][pypi-url] [![MIT-badge]][MIT-url] [![black-badge]][black-url]
 
-> pythonic way to create HTML/XML/SVG tag
+> pythonic way to create HTML/XML/SVG tags
 
 - create tags in pure python
 - use context manager for tag hierarchy
@@ -53,8 +53,9 @@ more examples could be found on [references] and [tests]
 - add trailing underscore to work around python keywords and built-in object
     - tag attributes: `class_`, `for_`
     - tag object: `del_`, `input_`, `map_`, `object_`
-- `prettify()` method doesn't support attribute w/o value
-    - eg. use kwargs `selected=""` instead of positional args `selected`
+- `prettify()` method doesn't support attribute without value
+    - use kwargs instead of positional args if prettifying is needed
+    - eg. `selected` -> `selected=""`
 
 ## Motivation
 
