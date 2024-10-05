@@ -6,9 +6,9 @@ header {
     padding: 0.2rem 0;
 }
 
-label.md-nav__title {
+/* label.md-nav__title {
     display: none;
-}
+} */
 
 .md-typeset h1 {
     color: var(--md-typeset-color);

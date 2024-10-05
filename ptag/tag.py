@@ -1,6 +1,9 @@
 from typing import Self
 from xml.dom.minidom import Document, parseString
-from typing import NamedTuple
+from typing import Iterable
+
+ChildrenType = Iterable[Self | str] | None
+ContentType = str | Self | ChildrenType
 
 
 class Tag:
@@ -8,7 +11,7 @@ class Tag:
 
     Examples:
 
-        - void element, child=None (default)
+        - void element, content=None (default)
         >>> Tag('br')
         <br />
 
@@ -16,8 +19,8 @@ class Tag:
         >>> Tag("img", src="http://img.url")
         <img src="http://img.url" />
 
-        - empty string child -> Tag with end tag but no content
-        >>> Tag("script", child="", src="url")
+        - empty string content -> Tag with end tag but no content
+        >>> Tag("script", content="", src="url")
         <script src="url"></script>
 
         - boolean attribute(attribute w/o value)
@@ -37,45 +40,63 @@ class Tag:
         <div><i>x</i></div>
 
     Args:
-        tag_name (str): tag name
-        child (str | Tag | None): inner text or other Tag, default None
-        args (list[str], optional): names of value-less attributes
-            - eg. `defer`, `selected`
-            - useful for UnoCSS attributify mode
-        kwargs (dict): tag attributes, in form of `key="val"`
+        tag_name (str | None): tag name
+        content (ContentType, optional): inner text, other Tag(s), or iterable of str/Tag, default None
+        **kwargs (dict[str, str | bool | None]): tag attributes, in form of `key=value`
+            - Use `key=None` to omit an attribute
+            - Use underscores for attribute names with hyphens (e.g., `data_attr="value"`)
 
+    Returns:
+        Tag: An instance of the Tag class representing the HTML/SVG element
     """
 
     tag_name: str
+    children: ChildrenType = None
     args: list[str] = []
     kwargs: dict[str, str] = {}
     parent: Self | None = None
-    children: list[Self | str] | None = None
-    context_stack: list[Self] = []  # context stack for context manager
+    context_stack: list[Self | "Text"] = []  # context stack for context manager
 
     def __init__(
         self,
         tag_name: str | None,
-        child: str | Self | None = None,
-        *args,
-        **kwargs,
+        content: ContentType = None,
+        *args: list[str],
+        **kwargs: dict[str, str],
     ):
         """initialize Tag, append to current context stack if exists"""
-        self.tag_name = tag_name
-        self.args = args
+        self.tag_name = str(tag_name)
+        self.args = sorted(set(args))
         self.kwargs = kwargs
-        self.children = self.prepare_child(child)
+        self.children = self.normalize(content)
 
         if Tag.context_stack:
-            Tag.context_stack[-1].add(self)
+            Tag.context_stack[-1].affix(self)
 
-    def prepare_child(self, child: str | Self | None) -> list[Self | str] | None:
-        """utils, prepare children for the Tag"""
-        if child is None:
+    def normalize(self, content: ContentType) -> ChildrenType:
+        """normalize content of different types to ChildrenType"""
+        if content is None:
             return None
-        if isinstance(child, Tag):
-            child.parent = self
-        return [child]
+
+        if isinstance(content, (str, Tag)):
+            return [self._create_child(content)]
+
+        if hasattr(content, "__iter__"):
+            return [self._create_child(item) for item in content]
+
+        raise ValueError(f"Invalid content type: {type(content)}")
+
+    def _create_child(self, item: str | Self) -> Self | "Text":
+        match item:
+            case str():
+                child = Text(item)
+            case Tag():
+                child = item
+            case _:
+                raise ValueError(f"Invalid content type: {type(item)}")
+
+        child.parent = self
+        return child
 
     def __enter__(self):
         """enter context manager, append self to current context stack
@@ -86,6 +107,7 @@ class Tag:
             >>> div                              # doctest: +SKIP
             <div>hello<p>world</p></div>
         """
+
         Tag.context_stack.append(self)
         return self
 
@@ -126,17 +148,15 @@ class Tag:
 
         return f"<{attr_str}>{content}</{self.tag_name}>"
 
-    def add(self, child: str | Self, *args, **kwargs) -> Self:
-        """add child and attributes to current Tag
+    def affix(self, content: ContentType, *args, **kwargs) -> Self:
+        """append child and attributes to current Tag"""
+        children = self.normalize(content)
+        if children:
+            old_children = self.children or []
+            new_children = [child for child in children if child not in old_children]
+            self.children = old_children + new_children
 
-        Examples:
-            >>> opt = Tag('option')
-            >>> opt.add('hello', 'selected', value='world')
-            <option selected value="world">hello</option>
-        """
-        tail = self.prepare_child(child)
-        self.children = tail if self.children is None else self.children + tail
-        self.args += args
+        self.args = sorted(set(self.args) | set(args))
         self.kwargs.update(kwargs)
         return self
 
@@ -144,6 +164,11 @@ class Tag:
         """prettify the Tag with indentation"""
         dom = parseString(str(self))
         return dom.childNodes[0].toprettyxml(indent=indent)
+
+    @property
+    def str(self) -> str:
+        """string representation of the Tag"""
+        return str(self)
 
     @staticmethod
     def comment(comment: str) -> str:
@@ -164,3 +189,10 @@ class Tag:
             '<!DOCTYPE html>'
         """
         return f"<!DOCTYPE {kind}>"
+
+
+class Text(str):
+    """text node"""
+
+    def __init__(self, content: str):
+        self.content = content
