@@ -23,7 +23,7 @@ def test_bool_attr():
 
 def test_update_args():
     l = label("Agree to terms")
-    l.add("🎉", class_="some class", for_="foo-input", data_columns="3")
+    l.affix("🎉", class_="some class", for_="foo-input", data_columns="3")
 
     assert (
         str(l)
@@ -33,7 +33,7 @@ def test_update_args():
 
 def test_pretty():
     with html() as doc:
-        div("hello").add(p("world"))
+        div("hello").affix(p("world"))
         with p("something"):
             span("yeah")
 
