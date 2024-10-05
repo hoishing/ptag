@@ -1,5 +1,5 @@
 """ptag - pythonic way to create HTML/XML/SVG tags"""
 
-from .elements import *
+from ptag.elements import *
 
-del typed_partial
+del element

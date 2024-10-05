@@ -41,12 +41,12 @@ print(f.pretty())
 # python keyword 'class' -> 'class_'
 tag = div(class_="foo") 
 # python keyword 'del' -> 'del_'
-tag.add(del_("bar"), "m-2", "rounded", id="baz") 
+tag.affix(del_("bar"), "m-2", "rounded", id="baz") 
 print(tag)  
 # <div m-2 rounded class="foo" id="baz"><del>bar</del></div>
 ```
 
-more examples could be found on [references] and [tests]
+more examples could be found on [tests] and [references]
 
 ## Limitations
 

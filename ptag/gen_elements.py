@@ -8,16 +8,18 @@ failing attempts included:
 - use `exec()` to create partial functions.
 """
 
-from pathlib import Path
 from functools import partial
-from typing import TypeVar, Callable, ParamSpec, Concatenate, cast
+from pathlib import Path
+from ptag.tag import Tag, ContentType
+from typing import Protocol
 
-P = ParamSpec("P")
-T = TypeVar("T")
+
+class Element(Protocol):
+    def __call__(self, content: ContentType, *args: list[str], **kwargs: dict[str, str]) -> Tag: ...
 
 
-def typed_partial(cls: Callable[Concatenate[str, P], T], tag_name: str) -> Callable[P, T]:
-    return cast(Callable[P, T], partial(cls, tag_name))
+def element(cls: Tag, tag_name: str) -> Element:
+    return partial(cls, tag_name)
 
 
 html_tags = """\
@@ -49,12 +51,12 @@ all_tags = sorted(set((html_tags + svg_tags).split()))
 def generate_elements():
     """generate and write HTML and SVG elements to `elements.py`"""
     with open("ptag/elements.py", "w") as f:
-        f.write(f"from .tag import Tag\n")
-        f.write(f"from .{Path(__file__).stem} import {typed_partial.__name__}\n\n")
+        f.write(f"from ptag.tag import Tag\n")
+        f.write(f"from ptag.{Path(__file__).stem} import {element.__name__}\n\n")
         for tag in all_tags:
             # handle special cases, del is a keyword
             alias = tag + "_" if tag in ["del", "input", "map", "object"] else tag
-            f.write(f"{alias} = {typed_partial.__name__}(Tag, '{tag}')\n")
+            f.write(f"{alias} = {element.__name__}(Tag, '{tag}')\n")
 
 
 if __name__ == "__main__":

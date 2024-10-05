@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ptag"
-version = "0.2.0"
+version = "0.2.1"
 description = "pythonic way to create HTML/XML/SVG tags"
 authors = ["Kelvin Ng <hoishing@gmail.com>"]
 readme = "README.md"
