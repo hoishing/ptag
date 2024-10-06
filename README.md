@@ -2,10 +2,9 @@
 
 [![ci-badge]][ci-url] [![pypi-badge]][pypi-url] [![MIT-badge]][MIT-url] [![black-badge]][black-url]
 
-> pythonic way to create HTML/XML/SVG tags
+> generate html/svg tags hierarchy with context manager
 
-- create tags in pure python
-- use **context manager** to create tag hierarchy
+- use ⭐️ context manager ⭐️ to create tag hierarchy
 - create value-less(boolean) attributes with positional argument
     - handy for using with [UnoCSS] attributify mode
 - all standard html and svg elements are exported as functions

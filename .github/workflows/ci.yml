@@ -33,7 +33,16 @@ jobs:
               run: pytest
 
             - id: check_version
-              run: python .github/workflows/check_version.py
+              run: |
+                  pyproject_version=$(poetry version -s)
+                  repo_name=$(basename $(poetry config repositories.main.url))
+                  latest_release=$(gh api repos/hoishing/$repo_name/releases/latest --jq .tag_name)
+                  
+                  if [ "$(printf '%s\n' "$latest_release" "$pyproject_version" | sort -V | tail -n1)" = "$pyproject_version" ]; then
+                    echo "new_version=$pyproject_version" >> $GITHUB_OUTPUT
+                  fi
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - id: build
               if: steps.check_version.outputs.new_version != ''
@@ -51,7 +60,6 @@ jobs:
               if: steps.pump.conclusion == 'success'
               run: |
                   latest_tag=${{ steps.check_version.outputs.new_version }}
-                  echo ${{ secrets.GH_TOKEN }} | gh auth login --with-token
                   gh release create "$latest_tag" --generate-notes ./dist/*
 
             - id: publish

@@ -4,8 +4,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ptag"
-version = "0.2.2"
-description = "pythonic way to create HTML/XML/SVG tags"
+version = "0.2.3"
+description = "generate html/svg tags hierarchy with context manager"
 authors = ["Kelvin Ng <hoishing@gmail.com>"]
 readme = "README.md"
 license = "MIT"
