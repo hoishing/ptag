@@ -4,14 +4,12 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ptag"
-version = "0.2.1"
+version = "0.2.2"
 description = "pythonic way to create HTML/XML/SVG tags"
 authors = ["Kelvin Ng <hoishing@gmail.com>"]
 readme = "README.md"
 license = "MIT"
-homepage = "https://hoishing.github.io/ptag"
 repository = "https://github.com/hoishing/ptag"
-documentation = "https://hoishing.github.io/ptag"
 keywords = ["template", "html", "xml", "svg", "tag"]
 classifiers = [
   "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
@@ -27,8 +25,6 @@ python = "^3.12"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-ipykernel = "^6.29.5"
-pytest = "^8.3.2"
-toml = "^0.10.2"
-mkdocstrings = { extras = ["python"], version = "^0.25.2" }
-mkdocs-material = "^9.5.31"
+pytest = "*"
+toml = "*"
+requests = "*"

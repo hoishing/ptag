@@ -87,6 +87,7 @@ class Tag:
         raise ValueError(f"Invalid content type: {type(content)}")
 
     def _create_child(self, item: str | Self) -> Self | "Text":
+        """create child node from string or Tag"""
         match item:
             case str():
                 child = Text(item)

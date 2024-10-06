@@ -6,78 +6,124 @@
 
 - create tags in pure python
 - use context manager for tag hierarchy
-- no external dependencies
-- read the [docs]
+- create value-less(boolean) attributes with positional argument
+    - handy for using with [UnoCSS] attributify mode
+- all standard html and svg elements are exported as functions
+- pure python, no external dependencies
 
 ## Quick Start
 
-Installation: `pip install ptag`
+- Installation: `pip install ptag`
+- base signature
+    - `element(content = None, *args, **kwargs) -> Tag`
 
 ```python
-from ptag import div, img, form, label, input_, del_
-from ptag import Tag  # for creating custom element
+# common elements
+from ptag import div, img, p, ul, li, label, input_,
+# for creating custom element
+from ptag import Tag  
+# for pretty print
+from ptag import prettify  
 
-# === html element ===
-tag = div(img(src="url"), id="bar")
-print(tag)  # <div id="bar"><img src="url"/></div>
+# empty tag
+print(div())
+# <div />
 
-# === custom element ===
-my_tag = Tag("MyTag", child="foo", attr="bar")
-print(my_tag)  # <MyTag attr="bar">foo</MyTag>
+# None content is ignored
+print(div(None))
+# <div />
 
-# == ⭐️ context manager ⭐️ ==
-with form() as f:
-    label("foo", for_="bar")  # python keyword 'for' -> 'for_'
-    input_(None, name="bar", type="checkbox", value="baz")
+# empty string content creates closing tag
+print(div(""))
+# <div></div>
 
-print(f.pretty())
-# <form>
-#     <label for="bar">foo</label>
-#     <input name="bar" type="checkbox" value="baz"/>
-# </form>
+# position args -> value-less attribute
+print(div(img(src="url"), id="bar"))  
+# <div id="bar"><img src="url"/></div>
 
-# === add content and attributes to existing tag ===
-# position args -> attribute w/o value
-# python keyword 'class' -> 'class_'
-tag = div(class_="foo") 
-# python keyword 'del' -> 'del_'
-tag.affix(del_("bar"), "m-2", "rounded", id="baz") 
-print(tag)  
-# <div m-2 rounded class="foo" id="baz"><del>bar</del></div>
+# content mix with strings and tags
+print(div(["foo", img(src="url"), "bar")])
+# <div>foo<img src="url"/>bar</div>
 ```
 
-more examples could be found on [tests] and [references]
+- use with context manager
+
+```python
+with ul() as bullets:
+    li("foo")
+    li("bar")
+
+print(bullets)
+# <ul><li>foo</li><li>bar</li></ul>
+```
+
+- pretty print
+
+```python
+print(bullets.prettify())
+# <ul>
+#     <li>foo</li>
+#     <li>bar</li>
+# </ul>
+```
+
+- use trailing underscore to work around python keyword and built-in functions
+- attributes:
+    - `class_` -> `class`
+    - `for_` -> `for`
+- elements:
+    - `del_` -> `del`
+    - `input_` -> `input`
+    - `map_` -> `map`
+    - `object_` -> `object`
+
+```python
+print(label("foo", for_="bar"))
+# <label for="bar">foo</label>
+
+print(input_(None, class_="foo", name="bar", type="checkbox", value="baz"))
+# <input name="bar" type="checkbox" value="baz"/>
+```
+
+- position args -> value-less attribute
+
+```python
+print(div("foo", "bar", "m-2", "rounded", id="baz"))
+# <div bar m-2 rounded id="baz">foo</div>
+```
+
+- keyword argument with value None is ignored
+
+```python
+tag = div(None, "m-2", "rounded", id="baz", style=None) 
+print(tag)  
+# <div m-2 rounded id="baz" />
+```
+
+- append content and attributes to existing tag
+
+```python
+tag = div()
+tag.affix(p("bar"), "m-2", "rounded", id="baz") 
+print(tag)  
+# <div m-2 rounded id="baz"><p>bar</p></div>
+```
+
+- create custom element
+
+```python
+my_tag = Tag("MyTag", "foo", "bar", "corge", id="baz", class_="qux")
+print(my_tag)  
+# <MyTag bar corge id="baz" class="qux">foo</MyTag>
+```
+
+more examples could be found on [tests]
 
 ## Limitations
 
-- add trailing underscore to work around python keywords and built-in object
-    - tag attributes: `class_`, `for_`
-    - tag object: `del_`, `input_`, `map_`, `object_`
 - `prettify()` method doesn't support attribute without value
     - use kwargs instead of positional args if prettifying is needed
     - eg. `selected` -> `selected=""`
-
-## Motivation
-
-When working with HTML, instead of separating python and template files like this:
-
-```html
-<ul id="navigation">
-    {% for item in navigation %}
-    <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
-    {% endfor %}
-</ul>
-```
-
-I prefer a pythonic approach like this:
-
-```python
-with ul(id="navigation") as nav:
-    for item in navigation:
-        li(a(item.caption, href=item.href))
-```
-
-It provides full intellisense, type checking, extensive language supports from text editors... etc. a much better DX.
 
 ## Need Help?
 
@@ -89,14 +135,13 @@ It provides full intellisense, type checking, extensive language supports from t
 [black-url]: https://github.com/psf/black
 [ci-badge]: https://github.com/hoishing/ptag/actions/workflows/ci.yml/badge.svg
 [ci-url]: https://github.com/hoishing/ptag/actions/workflows/ci.yml
-[docs]: https://hoishing.github.io/ptag
 [git-logo]: https://api.iconify.design/bi/github.svg?color=%236FD886&width=20
 [github issue]: https://github.com/hoishing/ptag/issues
 [MIT-badge]: https://img.shields.io/github/license/hoishing/ptag
 [MIT-url]: https://opensource.org/licenses/MIT
 [pypi-badge]: https://img.shields.io/pypi/v/ptag
 [pypi-url]: https://pypi.org/project/ptag/
-[references]: https://hoishing.github.io/ptag/references
 [tests]: https://github.com/hoishing/ptag/tree/main/tests
+[UnoCSS]: https://github.com/unocss/unocss
 [x-logo]: https://api.iconify.design/ri:twitter-x-fill.svg?width=20&color=DarkGray
 [x-post]: https://x.com/hoishing
