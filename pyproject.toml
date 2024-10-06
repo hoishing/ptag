@@ -26,5 +26,3 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
-toml = "*"
-requests = "*"

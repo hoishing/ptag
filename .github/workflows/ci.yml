@@ -61,6 +61,8 @@ jobs:
               run: |
                   latest_tag=${{ steps.check_version.outputs.new_version }}
                   gh release create "$latest_tag" --generate-notes ./dist/*
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - id: publish
               if: steps.release.conclusion == 'success'
