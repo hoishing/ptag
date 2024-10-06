@@ -5,11 +5,12 @@
 > pythonic way to create HTML/XML/SVG tags
 
 - create tags in pure python
-- use context manager for tag hierarchy
+- use **context manager** to create tag hierarchy
 - create value-less(boolean) attributes with positional argument
     - handy for using with [UnoCSS] attributify mode
 - all standard html and svg elements are exported as functions
 - pure python, no external dependencies
+- high test coverage
 
 ## Quick Start
 
@@ -37,7 +38,7 @@ print(div(None))
 print(div(""))
 # <div></div>
 
-# position args -> value-less attribute
+# tag as content
 print(div(img(src="url"), id="bar"))  
 # <div id="bar"><img src="url"/></div>
 
@@ -85,11 +86,13 @@ print(input_(None, class_="foo", name="bar", type="checkbox", value="baz"))
 # <input name="bar" type="checkbox" value="baz"/>
 ```
 
-- position args -> value-less attribute
+- position args -> value-less attribute.
+    - boolean attribute: eg. `checked`, `disabled`, `selected`
+    - assign tailwind classes with [UnoCSS] attributify mode
 
 ```python
-print(div("foo", "bar", "m-2", "rounded", id="baz"))
-# <div bar m-2 rounded id="baz">foo</div>
+print(div("foo", "clear-both", "m-2", "rounded", id="baz"))
+# <div clear-both m-2 rounded id="baz">foo</div>
 ```
 
 - keyword argument with value None is ignored
@@ -110,6 +113,8 @@ print(tag)
 ```
 
 - create custom element
+- signature:
+    - `Tag(name: str, content = None, *args, **kwargs) -> str`
 
 ```python
 my_tag = Tag("MyTag", "foo", "bar", "corge", id="baz", class_="qux")
@@ -117,7 +122,7 @@ print(my_tag)
 # <MyTag bar corge id="baz" class="qux">foo</MyTag>
 ```
 
-more examples could be found on [tests]
+- more examples could be found in [tests] package
 
 ## Limitations
 
@@ -127,15 +132,15 @@ more examples could be found on [tests]
 
 ## Need Help?
 
-[![git-logo] github issue][github issue]
-
-[![x-logo] posts][x-post]
+- [github issue]
+- [x.com posts]
+- [contact the author]
 
 [black-badge]: https://img.shields.io/badge/code%20style-black-000000.svg
 [black-url]: https://github.com/psf/black
 [ci-badge]: https://github.com/hoishing/ptag/actions/workflows/ci.yml/badge.svg
 [ci-url]: https://github.com/hoishing/ptag/actions/workflows/ci.yml
-[git-logo]: https://api.iconify.design/bi/github.svg?color=%236FD886&width=20
+[contact the author]: https://hoishing.github.io
 [github issue]: https://github.com/hoishing/ptag/issues
 [MIT-badge]: https://img.shields.io/github/license/hoishing/ptag
 [MIT-url]: https://opensource.org/licenses/MIT
@@ -143,5 +148,4 @@ more examples could be found on [tests]
 [pypi-url]: https://pypi.org/project/ptag/
 [tests]: https://github.com/hoishing/ptag/tree/main/tests
 [UnoCSS]: https://github.com/unocss/unocss
-[x-logo]: https://api.iconify.design/ri:twitter-x-fill.svg?width=20&color=DarkGray
-[x-post]: https://x.com/hoishing
+[x.com posts]: https://x.com/hoishing
