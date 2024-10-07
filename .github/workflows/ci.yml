@@ -38,7 +38,7 @@ jobs:
                   repo_name="${GITHUB_REPOSITORY#*/}"
                   latest_release=$(gh api repos/$GITHUB_REPOSITORY/releases/latest --jq .tag_name)
                   
-                  if [ "$(printf '%s\n' "$latest_release" "$pyproject_version" | sort -V | tail -n1)" = "$pyproject_version" ]; then
+                  if [ "$(printf '%s\n' "$latest_release" "$pyproject_version" | sort -V | tail -n1)" = "$pyproject_version" ] && [ "$pyproject_version" != "$latest_release" ]; then
                     echo "new_version=$pyproject_version" >> $GITHUB_OUTPUT
                   fi
               env:
